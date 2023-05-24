@@ -15,6 +15,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -22,10 +23,17 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ahmrh.pierresproduct.ui.navigation.NavigationItem
 import com.ahmrh.pierresproduct.ui.navigation.Screen
+import com.ahmrh.pierresproduct.ui.screen.cart.CartScreen
+import com.ahmrh.pierresproduct.ui.screen.profile.ProfileScreen
+import com.ahmrh.pierresproduct.ui.screen.store.StoreScreen
 import com.ahmrh.pierresproduct.ui.theme.PierresProductTheme
 
 @ExperimentalMaterial3Api
@@ -36,22 +44,38 @@ fun PierresProductApp(
 ) {
     Scaffold(
         bottomBar = {
-            BottomBar(navController)
+            BottomNavigation(navController)
         },
         modifier = modifier
     ) { innerPadding ->
-        Box(
-            modifier = modifier.padding(innerPadding)
-        )
+        NavHost(
+            navController = navController,
+            startDestination = Screen.Store.route,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable(Screen.Store.route) {
+                StoreScreen()
+            }
+            composable(Screen.Cart.route) {
+                CartScreen()
+            }
+            composable(Screen.Profile.route) {
+                ProfileScreen()
+            }
+        }
     }
 }
 
 @ExperimentalMaterial3Api
 @Composable
-private fun BottomBar(
+private fun BottomNavigation(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     val navigationItems = listOf(
         NavigationItem(
             title = stringResource(id = R.string.menu_store),
@@ -75,10 +99,19 @@ private fun BottomBar(
         navigationItems.map { item ->
 
             NavigationBarItem(
-                icon = { Icon(item.icon, contentDescription = null) },
+                icon = { Icon(item.icon, contentDescription = item.title) },
                 label = { Text(item.title) },
-                selected = true,
-                onClick = {}
+                selected = currentRoute == item.screen.route,
+                onClick = {
+                    navController.navigate(item.screen.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        restoreState = true
+                        launchSingleTop = true
+
+                    }
+                }
             )
 
         }
