@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Pierre\'s Product</string>
+
+    <string name="menu_store">Store</string>
+    <string name="menu_cart">Cart</string>
+    <string name="menu_profile">Profile</string>
 </resources>
