@@ -9,13 +9,29 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -57,7 +73,7 @@ fun DetailScreen(
 
             is UiState.Success -> {
                 val product = uiState.data
-                DetailContent(product)
+                DetailContent(product, navigateToBasket)
             }
 
             is UiState.Error -> {}
@@ -67,14 +83,18 @@ fun DetailScreen(
 
 @Composable
 fun DetailContent(
-    product: Product
+    product: Product,
+    navigateToBasket: () -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 24.dp)
     ) {
-        Column {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .background(MaterialTheme.colorScheme.surface)
+        ){
             Header(
                 product.name,
                 product.price,
@@ -84,7 +104,29 @@ fun DetailContent(
                 product
             )
         }
-        BottomAppBar
+        BottomAppBar(
+            modifier = Modifier
+                .align(Alignment.BottomEnd),
+            containerColor = MaterialTheme.colorScheme.onPrimary,
+            actions = {
+            },
+            floatingActionButton = {
+                Button(
+                    onClick = {
+                              navigateToBasket()
+                    },
+                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+                ) {
+                    Icon(
+                        Icons.Filled.ShoppingCart,
+                        contentDescription = "Add to Basket",
+                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                    )
+                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                    Text("Add to Basket")
+                }
+            }
+        )
     }
 }
 
@@ -109,15 +151,6 @@ fun Header(
                 .size(96.dp)
                 .clip(RoundedCornerShape(8.dp)),
         )
-//        Image(
-//            painterResource(id = R.drawable.pumpkin_seeds),
-//            contentDescription = "",
-//            contentScale = ContentScale.Crop,
-//            modifier = Modifier
-//                .padding(end = 16.dp)
-//                .size(96.dp)
-//                .clip(RoundedCornerShape(8.dp)),
-//        )
         Column(
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
@@ -183,16 +216,6 @@ fun Body(
             )
 
 
-
-//            Image(
-//                painterResource(id = R.drawable.pumpkin),
-//                contentDescription = "",
-//                contentScale = ContentScale.Crop,
-//                modifier = Modifier
-//                    .padding(end = 16.dp)
-//                    .size(96.dp)
-//                    .clip(RoundedCornerShape(8.dp)),
-//            )
         }
     }
 }
@@ -309,8 +332,8 @@ fun TableRowPrice(
 @Preview(showBackground = true)
 @Composable
 fun DetailScreenPreview(){
-    DetailScreen(
-        productId = 1,
-        navigateToBasket = {}
+    DetailContent(
+        product = FakeProductDataSource.dummyProducts[0],
+        {}
     )
 }
