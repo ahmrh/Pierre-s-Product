@@ -46,7 +46,6 @@ fun DetailScreen(
             Injection.provideRepository()
         )
     ),
-    navigateBack: () -> Unit,
     navigateToBasket: () -> Unit
 ) {
     Log.d("DetailScreen", "$productId")
@@ -73,7 +72,7 @@ fun DetailContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
+            .padding(horizontal = 24.dp)
     ) {
         Column {
             Header(
@@ -310,7 +309,7 @@ fun TableRowPrice(
 @Composable
 fun DetailScreenPreview(){
     DetailScreen(
-        productId = 0,
-        navigateBack = {}) {
-    }
+        productId = 1,
+        navigateToBasket = {}
+    )
 }

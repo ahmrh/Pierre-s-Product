@@ -4,23 +4,28 @@ import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -46,76 +51,89 @@ fun PierresProductApp(
         modifier = modifier,
         topBar = {
             if (currentRoute != Screen.Store.route) {
-                TopBar(navController)
-            }
-        }
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = Screen.Store.route,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable(Screen.Store.route) {
-                StoreScreen(
-                    navigateToDetail = { productId ->
-                        navController.navigate(
-                            Screen.Detail.createRoute(
-                                productId
+                TopAppBar(
+                    title = {},
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            navController.navigateUp()
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = "Back Arrow"
                             )
-                        )
-                    },
-                    navigateToBasket = {
-                        navController.navigate(Screen.Basket.route)
-                    },
-                    navigateToProfile = {
-                        navController.navigate(Screen.Profile.route)
-                    }
-                )
-            }
-            composable(Screen.Basket.route) {
-                BasketScreen()
-            }
-            composable(Screen.Profile.route) {
-                ProfileScreen()
-            }
-            composable(
-                route = Screen.Detail.route,
-                arguments = listOf(navArgument("productId"){
-                    nullable = true
-                })
-            ) {
-                val arguments = it.arguments
-                Log.d(
-                    "Pierre's App",
-                    " ${arguments.toString()}"
-                )
-
-                val id = arguments?.getString("productId")?.toInt() ?: -1
-                Log.d(
-                    "Pierre's App",
-                    " ${id}"
-                )
-                DetailScreen(
-                    productId = id,
-                    navigateBack = {
-                        navController.navigateUp()
-                    },
-                    navigateToBasket = {
-                        navController.popBackStack()
-                        navController.navigate(Screen.Basket.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
                         }
-                    }
+                    },
+                    actions = {}
                 )
             }
-
-
         }
+) {
+    innerPadding ->
+    NavHost(
+        navController = navController,
+        startDestination = Screen.Store.route,
+        modifier = Modifier.padding(innerPadding)
+    ) {
+        composable(Screen.Store.route) {
+            StoreScreen(
+                navigateToDetail = { productId ->
+                    navController.navigate(
+                        Screen.Detail.createRoute(
+                            productId
+                        )
+                    )
+                },
+                navigateToBasket = {
+                    navController.navigate(Screen.Basket.route)
+                },
+                navigateToProfile = {
+                    navController.navigate(Screen.Profile.route)
+                }
+            )
+        }
+        composable(Screen.Basket.route) {
+            BasketScreen()
+        }
+        composable(Screen.Profile.route) {
+            ProfileScreen()
+        }
+        composable(
+            route = Screen.Detail.route,
+            arguments = listOf(navArgument("productId") {
+                nullable = true
+            })
+        ) {
+            val arguments = it.arguments
+            Log.d(
+                "Pierre's App",
+                " ${arguments.toString()}"
+            )
+
+            val id =
+                arguments?.getString("productId")?.toInt()
+                    ?: -1
+            Log.d(
+                "Pierre's App",
+                " ${id}"
+            )
+            DetailScreen(
+                productId = id,
+                navigateToBasket = {
+                    navController.popBackStack()
+                    navController.navigate(Screen.Basket.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            )
+        }
+
+
     }
+}
 }
 
 @ExperimentalMaterial3Api
