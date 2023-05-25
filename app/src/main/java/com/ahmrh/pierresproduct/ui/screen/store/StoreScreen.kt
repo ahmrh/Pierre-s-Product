@@ -1,5 +1,6 @@
 package com.ahmrh.pierresproduct.ui.screen.store
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -139,9 +140,8 @@ fun TopBar(
             trailingIcon = {},
             modifier = Modifier
                 .weight(1f)
-        ) {
+        ) {}
 
-        }
         IconButton(
             onClick = {
                 navigateToProfile()

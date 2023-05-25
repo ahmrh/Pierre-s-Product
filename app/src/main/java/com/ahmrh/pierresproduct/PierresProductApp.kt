@@ -1,5 +1,6 @@
 package com.ahmrh.pierresproduct
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -28,7 +29,6 @@ import androidx.navigation.navArgument
 import com.ahmrh.pierresproduct.ui.navigation.NavigationItem
 import com.ahmrh.pierresproduct.ui.navigation.Screen
 import com.ahmrh.pierresproduct.ui.screen.basket.BasketScreen
-import com.ahmrh.pierresproduct.ui.screen.detail.DetailContent
 import com.ahmrh.pierresproduct.ui.screen.detail.DetailScreen
 import com.ahmrh.pierresproduct.ui.screen.profile.ProfileScreen
 import com.ahmrh.pierresproduct.ui.screen.store.StoreScreen
@@ -40,8 +40,15 @@ fun PierresProductApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
     Scaffold(
-        modifier = modifier
+        modifier = modifier,
+        topBar = {
+            if (currentRoute != Screen.Store.route) {
+                TopBar(navController)
+            }
+        }
     ) { innerPadding ->
         NavHost(
             navController = navController,
@@ -51,7 +58,11 @@ fun PierresProductApp(
             composable(Screen.Store.route) {
                 StoreScreen(
                     navigateToDetail = { productId ->
-                        navController.navigate(Screen.Detail.createRoute(productId))
+                        navController.navigate(
+                            Screen.Detail.createRoute(
+                                productId
+                            )
+                        )
                     },
                     navigateToBasket = {
                         navController.navigate(Screen.Basket.route)
@@ -69,9 +80,21 @@ fun PierresProductApp(
             }
             composable(
                 route = Screen.Detail.route,
-                arguments = listOf(navArgument("productId") { NavType.IntType })
-            ){
-                val id = it.arguments?.getInt("productId") ?: -1
+                arguments = listOf(navArgument("productId"){
+                    nullable = true
+                })
+            ) {
+                val arguments = it.arguments
+                Log.d(
+                    "Pierre's App",
+                    " ${arguments.toString()}"
+                )
+
+                val id = arguments?.getString("productId")?.toInt() ?: -1
+                Log.d(
+                    "Pierre's App",
+                    " ${id}"
+                )
                 DetailScreen(
                     productId = id,
                     navigateBack = {
@@ -128,7 +151,12 @@ private fun BottomNavigation(
         navigationItems.map { item ->
 
             NavigationBarItem(
-                icon = { Icon(item.icon, contentDescription = item.title) },
+                icon = {
+                    Icon(
+                        item.icon,
+                        contentDescription = item.title
+                    )
+                },
                 label = { Text(item.title) },
                 selected = currentRoute == item.screen.route,
                 onClick = {
@@ -146,10 +174,18 @@ private fun BottomNavigation(
     }
 }
 
+@Composable
+private fun TopBar(
+    navController: NavHostController,
+    modifier: Modifier
+) {
+
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun PierresProductAppPreview(){
+fun PierresProductAppPreview() {
     PierresProductTheme {
         PierresProductApp()
     }

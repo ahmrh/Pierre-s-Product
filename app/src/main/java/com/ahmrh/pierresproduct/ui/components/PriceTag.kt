@@ -26,10 +26,12 @@ fun PriceTag(
     price: Int,
     fontSize: TextUnit = 16.sp,
     iconSize: Dp = 18.dp,
+    modifier: Modifier = Modifier
 ) {
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
     ) {
         Text(
             text = "$price",

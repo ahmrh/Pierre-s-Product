@@ -23,7 +23,9 @@ fun ProductItem(
     price: Int,
     modifier: Modifier = Modifier,
 ) {
-    Column {
+    Column (
+        modifier = modifier
+    ){
         ListItem(
             headlineContent = { Text(title) },
             trailingContent = { PriceTag(price) },
