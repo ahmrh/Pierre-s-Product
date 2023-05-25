@@ -25,7 +25,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ahmrh.pierresproduct.ui.navigation.NavigationItem
 import com.ahmrh.pierresproduct.ui.navigation.Screen
-import com.ahmrh.pierresproduct.ui.screen.cart.CartScreen
+import com.ahmrh.pierresproduct.ui.screen.basket.BasketScreen
 import com.ahmrh.pierresproduct.ui.screen.profile.ProfileScreen
 import com.ahmrh.pierresproduct.ui.screen.store.StoreScreen
 import com.ahmrh.pierresproduct.ui.theme.PierresProductTheme
@@ -37,9 +37,6 @@ fun PierresProductApp(
     navController: NavHostController = rememberNavController()
 ) {
     Scaffold(
-        bottomBar = {
-            BottomNavigation(navController)
-        },
         modifier = modifier
     ) { innerPadding ->
         NavHost(
@@ -51,11 +48,17 @@ fun PierresProductApp(
                 StoreScreen(
                     navigateToDetail = { productId ->
                         navController.navigate(Screen.Detail.createRoute(productId))
+                    },
+                    navigateToBasket = {
+                        navController.navigate(Screen.Basket.route)
+                    },
+                    navigateToProfile = {
+                        navController.navigate(Screen.Profile.route)
                     }
                 )
             }
-            composable(Screen.Cart.route) {
-                CartScreen()
+            composable(Screen.Basket.route) {
+                BasketScreen()
             }
             composable(Screen.Profile.route) {
                 ProfileScreen()
@@ -83,7 +86,7 @@ private fun BottomNavigation(
         NavigationItem(
             title = stringResource(R.string.menu_cart),
             icon = Icons.Default.ShoppingCart,
-            screen = Screen.Cart
+            screen = Screen.Basket
         ),
         NavigationItem(
             title = stringResource(R.string.menu_profile),
@@ -111,10 +114,8 @@ private fun BottomNavigation(
                     }
                 }
             )
-
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

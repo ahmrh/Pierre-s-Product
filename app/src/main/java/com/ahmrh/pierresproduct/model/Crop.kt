@@ -1,11 +1,10 @@
 package com.ahmrh.pierresproduct.model
 
-data class Product(
-    val id: Int,
+data class Crop(
     val name: String,
     val imgUrl: String,
-    val price: Int,
+    val season: String,
+    val growthTime: String,
+    val sellPrice: Int,
     val desc: String,
-    val crop: Crop,
 )
-

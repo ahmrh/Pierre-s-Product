@@ -1,5 +1,7 @@
 package com.ahmrh.pierresproduct.ui.screen.store
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ahmrh.pierresproduct.data.ProductRepository
@@ -17,7 +19,28 @@ class StoreViewModel(
     val uiState: StateFlow<UiState<List<Product>>>
         get() = _uiState
 
+    private val _query = mutableStateOf("")
+    val query: State<String> get() = _query
+
+    fun search(newQuery: String) {
+        _uiState.value = UiState.Loading
+
+        _query.value = newQuery
+        viewModelScope.launch {
+            repository.searchProduct(_query.value)
+                .catch {
+                    _uiState.value = UiState.Error(it.message.toString())
+                }
+                .collect { product ->
+                    _uiState.value = UiState.Success(product)
+                }
+        }
+    }
+
+
     fun getAllProducts(){
+        _uiState.value = UiState.Loading
+
         viewModelScope.launch {
             repository.getAllProducts()
                 .catch {
@@ -27,6 +50,10 @@ class StoreViewModel(
                     _uiState.value = UiState.Success(product)
                 }
         }
+    }
+
+    fun getProducts(){
+
     }
 
 }

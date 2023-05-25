@@ -4,4 +4,6 @@
     <string name="menu_store">Store</string>
     <string name="menu_cart">Cart</string>
     <string name="menu_profile">Profile</string>
+
+    <string name="gold_url">https://stardewvalleywiki.com/mediawiki/images/1/10/Gold.png</string>
 </resources>

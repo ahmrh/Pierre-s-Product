@@ -8,9 +8,11 @@ import kotlinx.coroutines.flow.flowOf
 class ProductRepository {
     private val products = mutableListOf<Product>()
 
-    init{
-        if(products.isEmpty())
-            FakeProductDataSource.dummyProducts.mapTo(products){ it }
+    init {
+        if (products.isEmpty())
+            FakeProductDataSource.dummyProducts.mapTo(
+                products
+            ) { it }
     }
 
     fun getAllProducts(): Flow<List<Product>> {
@@ -21,6 +23,14 @@ class ProductRepository {
         return products.first {
             it.id == productId
         }
+    }
+
+    fun searchProduct(query: String): Flow<List<Product>> {
+        return flowOf(
+            products.filter {
+                it.name.contains(query, ignoreCase = true)
+            }
+        )
     }
 
     companion object {
