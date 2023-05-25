@@ -13,11 +13,11 @@ class ProductRepository {
             FakeProductDataSource.dummyProducts.mapTo(products){ it }
     }
 
-    fun getAllRewards(): Flow<List<Product>> {
+    fun getAllProducts(): Flow<List<Product>> {
         return flowOf(products)
     }
 
-    fun getRewardById(productId: Int): Product {
+    fun getProductById(productId: Int): Product {
         return products.first {
             it.id == productId
         }

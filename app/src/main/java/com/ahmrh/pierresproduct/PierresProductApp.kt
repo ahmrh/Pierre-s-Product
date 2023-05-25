@@ -1,13 +1,9 @@
 package com.ahmrh.pierresproduct
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -20,8 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -54,7 +48,11 @@ fun PierresProductApp(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Store.route) {
-                StoreScreen()
+                StoreScreen(
+                    navigateToDetail = { productId ->
+                        navController.navigate(Screen.Detail.createRoute(productId))
+                    }
+                )
             }
             composable(Screen.Cart.route) {
                 CartScreen()
@@ -119,7 +117,7 @@ private fun BottomNavigation(
 
 }
 
-@ExperimentalMaterial3Api
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 fun PierresProductAppPreview(){
