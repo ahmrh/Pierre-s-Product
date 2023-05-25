@@ -19,13 +19,17 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.ahmrh.pierresproduct.ui.navigation.NavigationItem
 import com.ahmrh.pierresproduct.ui.navigation.Screen
 import com.ahmrh.pierresproduct.ui.screen.basket.BasketScreen
+import com.ahmrh.pierresproduct.ui.screen.detail.DetailContent
+import com.ahmrh.pierresproduct.ui.screen.detail.DetailScreen
 import com.ahmrh.pierresproduct.ui.screen.profile.ProfileScreen
 import com.ahmrh.pierresproduct.ui.screen.store.StoreScreen
 import com.ahmrh.pierresproduct.ui.theme.PierresProductTheme
@@ -63,6 +67,30 @@ fun PierresProductApp(
             composable(Screen.Profile.route) {
                 ProfileScreen()
             }
+            composable(
+                route = Screen.Detail.route,
+                arguments = listOf(navArgument("productId") { NavType.IntType })
+            ){
+                val id = it.arguments?.getInt("productId") ?: -1
+                DetailScreen(
+                    productId = id,
+                    navigateBack = {
+                        navController.navigateUp()
+                    },
+                    navigateToBasket = {
+                        navController.popBackStack()
+                        navController.navigate(Screen.Basket.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
+            }
+
+
         }
     }
 }
