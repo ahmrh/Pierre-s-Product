@@ -84,6 +84,7 @@ fun DetailContent(
                 product
             )
         }
+        BottomAppBar
     }
 }
 

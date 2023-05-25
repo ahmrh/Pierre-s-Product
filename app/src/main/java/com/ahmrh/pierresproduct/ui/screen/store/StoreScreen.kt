@@ -151,7 +151,7 @@ fun TopBar(
                 .size(56.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.omori),
+                painter = painterResource(id = R.drawable.me),
                 contentDescription = "Profile",
                 contentScale = ContentScale.Crop
             )
