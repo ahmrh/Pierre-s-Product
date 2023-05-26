@@ -22,4 +22,10 @@ class DetailViewModel(var repository: ProductRepository): ViewModel() {
         }
     }
 
+    fun insertToBasket(productId: Int) {
+        viewModelScope.launch{
+            repository.insertToBasket(productId = productId)
+        }
+    }
+
 }

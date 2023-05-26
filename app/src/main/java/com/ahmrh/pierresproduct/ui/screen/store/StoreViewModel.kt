@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.ahmrh.pierresproduct.data.ProductRepository
 import com.ahmrh.pierresproduct.model.Product
 import com.ahmrh.pierresproduct.ui.util.UiState
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -19,8 +21,22 @@ class StoreViewModel(
     val uiState: StateFlow<UiState<List<Product>>>
         get() = _uiState
 
+
     private val _query = mutableStateOf("")
     val query: State<String> get() = _query
+
+    private val _isBasketEmpty = MutableStateFlow(true)
+    val isBasketEmpty: StateFlow<Boolean>
+        get() = _isBasketEmpty
+
+    fun checkBasketEmpty() {
+        viewModelScope.launch {
+            repository.basketIsEmpty()
+                .collect {
+                    _isBasketEmpty.value = it
+                }
+        }
+    }
 
     fun search(newQuery: String) {
         _uiState.value = UiState.Loading
@@ -52,8 +68,5 @@ class StoreViewModel(
         }
     }
 
-    fun getProducts(){
-
-    }
 
 }

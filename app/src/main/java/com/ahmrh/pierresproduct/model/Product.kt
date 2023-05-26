@@ -1,5 +1,7 @@
 package com.ahmrh.pierresproduct.model
 
+import androidx.room.Entity
+
 data class Product(
     val id: Int,
     val name: String,
