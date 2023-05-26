@@ -2,7 +2,6 @@ package com.ahmrh.pierresproduct.ui.screen.detail
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -16,36 +15,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.ahmrh.pierresproduct.R
 import com.ahmrh.pierresproduct.di.Injection
 import com.ahmrh.pierresproduct.model.Crop
 import com.ahmrh.pierresproduct.model.FakeProductDataSource
@@ -62,7 +50,7 @@ fun DetailScreen(
             Injection.provideRepository()
         )
     ),
-    navigateToBasket: () -> Unit
+    addingToBasket: () -> Unit
 ) {
     Log.d("DetailScreen", "$productId")
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
@@ -73,7 +61,7 @@ fun DetailScreen(
 
             is UiState.Success -> {
                 val product = uiState.data
-                DetailContent(product, navigateToBasket)
+                DetailContent(product, addingToBasket)
             }
 
             is UiState.Error -> {}
@@ -84,7 +72,7 @@ fun DetailScreen(
 @Composable
 fun DetailContent(
     product: Product,
-    navigateToBasket: () -> Unit
+    addingToBasket: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -94,7 +82,7 @@ fun DetailContent(
             modifier = Modifier
                 .padding(horizontal = 24.dp)
                 .background(MaterialTheme.colorScheme.surface)
-        ){
+        ) {
             Header(
                 product.name,
                 product.price,
@@ -113,14 +101,16 @@ fun DetailContent(
             floatingActionButton = {
                 Button(
                     onClick = {
-                              navigateToBasket()
+                        addingToBasket()
                     },
                     contentPadding = ButtonDefaults.ButtonWithIconContentPadding
                 ) {
                     Icon(
                         Icons.Filled.ShoppingCart,
                         contentDescription = "Add to Basket",
-                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                        modifier = Modifier.size(
+                            ButtonDefaults.IconSize
+                        )
                     )
                     Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                     Text("Add to Basket")
@@ -207,7 +197,7 @@ fun Body(
                 )
             }
             AsyncImage(
-                model = product.crop.imgUrl ,
+                model = product.crop.imgUrl,
                 contentDescription = "Crop Image",
                 modifier = Modifier
                     .padding(end = 16.dp)
@@ -331,7 +321,7 @@ fun TableRowPrice(
 
 @Preview(showBackground = true)
 @Composable
-fun DetailScreenPreview(){
+fun DetailScreenPreview() {
     DetailContent(
         product = FakeProductDataSource.dummyProducts[0],
         {}

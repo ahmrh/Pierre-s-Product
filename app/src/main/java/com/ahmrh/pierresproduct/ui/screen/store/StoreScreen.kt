@@ -1,9 +1,7 @@
 package com.ahmrh.pierresproduct.ui.screen.store
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,7 +46,7 @@ fun StoreScreen(
         )
     ),
     navigateToDetail: (Int) -> Unit,
-    navigateToBasket: () -> Unit,
+    addingToBasket: () -> Unit,
     navigateToProfile: () -> Unit,
 ) {
     val query by viewModel.query
@@ -164,7 +162,7 @@ fun TopBar(
 fun StoreScreenPreview() {
     StoreScreen(
         navigateToDetail = {},
-        navigateToBasket = {},
+        addingToBasket = {},
         navigateToProfile = {}
     )
 }

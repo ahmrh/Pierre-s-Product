@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -14,15 +12,18 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -38,6 +39,7 @@ import com.ahmrh.pierresproduct.ui.screen.detail.DetailScreen
 import com.ahmrh.pierresproduct.ui.screen.profile.ProfileScreen
 import com.ahmrh.pierresproduct.ui.screen.store.StoreScreen
 import com.ahmrh.pierresproduct.ui.theme.PierresProductTheme
+import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @Composable
@@ -47,7 +49,11 @@ fun PierresProductApp(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         modifier = modifier,
         topBar = {
             if (currentRoute != Screen.Store.route) {
@@ -83,8 +89,10 @@ fun PierresProductApp(
                         )
                     )
                 },
-                navigateToBasket = {
-                    navController.navigate(Screen.Basket.route)
+                addingToBasket = {
+                    scope.launch {
+                        snackbarHostState.showSnackbar("Basket not implemented yet")
+                    }
                 },
                 navigateToProfile = {
                     navController.navigate(Screen.Profile.route)
@@ -118,14 +126,9 @@ fun PierresProductApp(
             )
             DetailScreen(
                 productId = id,
-                navigateToBasket = {
-                    navController.popBackStack()
-                    navController.navigate(Screen.Basket.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
+                addingToBasket = {
+                    scope.launch {
+                        snackbarHostState.showSnackbar("Basket not implemented yet")
                     }
                 }
             )
